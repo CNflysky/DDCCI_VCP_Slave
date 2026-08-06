@@ -20,6 +20,6 @@ int main() {
 
   while (1) {
     printf("brightness = %d\n", ddcci_get_brightness());
-    HAL_Delay(1000);
+    sleep_ms(1000);
   }
 }
