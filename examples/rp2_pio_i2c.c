@@ -62,11 +62,12 @@ const static char cap_str[] =
     "E3 F3)mccs_ver(2.1)mpu_ver(V0.1)model(DDC/CI VCP Slave)";
 
 void i2c_receive_handler(uint8_t data, bool is_address) {
-  if (!is_address) i2c_xfer_buf[i2c_xfer_len++] = data;
+  if (!is_address && i2c_xfer_len < sizeof(i2c_xfer_buf))
+    i2c_xfer_buf[i2c_xfer_len++] = data;
 }
 
 void i2c_stop_handler(uint8_t length) {
-  ddcci_process_request();
+  ddcci_vcp_slave_process_request(i2c_xfer_len);
   i2c_xfer_len = 0;
 }
 
@@ -81,7 +82,7 @@ int main() {
   ddcci_vcp_slave_init(&dvscfg);
 
   while (1) {
-    printf("brightness = %d\n", ddcci_get_brightness());
+    printf("brightness = %d\n", brightness);
     sleep_ms(1000);
   }
 }
